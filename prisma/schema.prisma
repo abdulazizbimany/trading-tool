@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Module {
+  id      String   @id
+  title   String
+  order   Int
+  lessons Lesson[]
+}
+
+model Lesson {
+  id       String          @id
+  title    String
+  order    Int
+  moduleId String
+  module   Module          @relation(fields: [moduleId], references: [id])
+  note     Note?
+  progress LessonProgress?
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  content   String   @default("")
+  lessonId  String   @unique
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LessonProgress {
+  id          String    @id @default(cuid())
+  lessonId    String    @unique
+  lesson      Lesson    @relation(fields: [lessonId], references: [id])
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+}
+
+model UserStats {
+  id           String    @id @default("singleton")
+  xp           Int       @default(0)
+  level        Int       @default(1)
+  streak       Int       @default(0)
+  lastActivity DateTime?
+  totalNotes   Int       @default(0)
+}
+
+model Achievement {
+  id         String   @id @default(cuid())
+  type       String   @unique
+  label      String
+  unlockedAt DateTime @default(now())
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  date      String
+  xpEarned  Int      @default(0)
+  notesWritten Int   @default(0)
+  createdAt DateTime @default(now())
+
+  @@unique([date])
+}
