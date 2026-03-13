@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY prisma ./prisma
-RUN npx prisma generate
+RUN DATABASE_URL="file:/tmp/build.db" npx prisma generate
 
 COPY . .
 RUN npm run build
