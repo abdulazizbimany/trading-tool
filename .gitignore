@@ -31,3 +31,6 @@ prisma/**/*.db-journal
 # Docker volumes
 data/
 backups/
+
+# Graphify local code graph
+graphify-out/
